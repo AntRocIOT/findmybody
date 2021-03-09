@@ -1,3 +1,5 @@
+from cocos.actions import Move, Repeat, MoveBy
+
 import Main
 from cocos.layer import ScrollableLayer
 from cocos.sprite import Sprite
@@ -9,25 +11,24 @@ from Character import Character
 
 class Level1(ScrollableLayer):
     is_event_handler = True
+
     def __init__(self):
         super().__init__()
-        self.schedule(self.update)
-        self.level1 = Level1Background('mapas/space.png',(600,0))
-        self.level1_scroll = Level1Background('mapas/space.png',(600,Main.get_screen_resolution()[1]))
-        self.add(self.level1).add(self.level1_scroll)
-    def update(self,dt):
-        for ele in self.children:
-            if isinstance(ele[1],Level1Background):
-                ele[1].update(dt)
+
+        SCROLLING_SPEED = 100
+        self.level1 = Level1Background('images/background/fondo_naves.png',(300,0))
+        self.level1_scroll = Level1Background('images/background/capa_velocidad.png',(Main.director.get_window_size()[0]/2,600))
+        self.level1_scroll.scale = 0.1
+        #self.add(self.level1)
+        self.add(self.level1_scroll)
+        #self.level1.do(Repeat(MoveBy((0,-400),500/150)+MoveBy((0,400),0)))
+        self.level1_scroll.do(Repeat(MoveBy((0,-800),1)+MoveBy((0,800),0)))
+        #self.level1_scroll.do(LevelBackGroundInfinite())
 class Level1Background(Sprite):
     def __init__(self,image,pos):
         super().__init__(image,pos)
         self.position = pos
         self.image2 = image
+        self.scale = 0.3
+        self.velocity = (0,0)
 
-
-    def update(self,dt):
-        self.position = (self.position[0],self.position[1]-400*dt)
-        if self.position[1] <= -Main.get_screen_resolution()[1]/2:
-            self.position = (600,Main.get_screen_resolution()[1]+280)
-            Settings.zones +=1

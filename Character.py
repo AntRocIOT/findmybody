@@ -2,25 +2,54 @@ import os
 import random
 import cProfile
 import cocos
+import cv2
 from cocos.euclid import Vector2
 from cocos.sprite import Sprite
 import pyglet
 import cocos.collision_model as cm
+from cocos.text import Label
 import cocos.tiles as tiled
 from cocos.camera import Camera
 from collections import defaultdict
 from cocos.layer import Layer, ScrollingManager
-from cocos.actions import Hide, Show, MoveBy, CallFunc, Delay
+from cocos.actions import Hide, Show, MoveBy, CallFunc, Delay, Driver, Move, Repeat, BoundedMove
 from pyglet.image import Animation
 from pyglet.window import key
 
 from pyglet.window.key import symbol_string
 import Main
 import Settings
-
-
+class NavePrincipalDriver(BoundedMove):
+    def step(self,dt):
+        super().step(dt)
+        velocidad = 400
+        x = (Settings.keyboard_player[key.D] - Settings.keyboard_player[key.A]) * velocidad
+        y = (Settings.keyboard_player[key.W] - Settings.keyboard_player[key.S]) * velocidad
+        self.target.velocity = (x,y)
+        #self.target.cshape.center = Vector2(*self.target.position)
+        self.target.update(dt)
+            #new_x = posIdle[0] + velocidad * x * dt * 2
+                #new_y = posIdle[1] + velocidad * y * dt * 2
+        #
+class NaveEnemigaMove(Move):
+    def step(self, dt):
+        super().step(dt)
+        velocidad = 50
+        self.target.velocity = (0,-velocidad)
+        self.target.update(dt)
+class MovimientoDispara(Move):
+    def step(self, dt):
+        super().step(dt)
+        velocidad = 300
+        if not self.target.is_enemy:
+            self.target.velocity = (0,velocidad)
+        elif self.target.is_enemy:
+            self.target.velocity = (0,-velocidad)
+        self.target.update(dt)
+NUMERO_ENEMIGOS = 12
 class Character(cocos.layer.ScrollableLayer):
     is_event_handler = True
+
     def __init__(self):
         super().__init__()
         self.sprite_walk = []
@@ -28,15 +57,14 @@ class Character(cocos.layer.ScrollableLayer):
         self.sprite_shoot = []
         self.numero_enemigos = 10
         self.disparo = None
-        self.izquierda = False
-        self.semaforo = 0
+
         self.alive = 1
         self.zones = 0
         self.velocidad = 200
         self.keys = defaultdict(int)
         self.schedule(self.update)
-        self.schedule_interval(self.on_key_pressed,0.2)
-        self.schedule_interval(self.dispara_enemic,1.5)
+
+        #self.schedule_interval(self.dispara_enemic,1.5)
         self.col_man = cm.CollisionManagerBruteForce()
         self.background = cocos.sprite.Sprite('images/background/background.png')
         directorio_personaje_reposo = 'images/character/idle'
@@ -61,126 +89,221 @@ class Character(cocos.layer.ScrollableLayer):
                 new_image = pyglet.image.load(directorio_personaje_disparo + '/' + image)
                 #new_image.blit(126, 126)
                 self.sprite_shoot.append(new_image)
-        self.animacioShoot = Animation.from_image_sequence(self.sprite_shoot, 0.02, True)
+        animacioShoot = Animation.from_image_sequence(self.sprite_shoot, 0.02, True)
         animacioIdle = Animation.from_image_sequence(self.sprite_idle, 0.05, True)
-        self.sprite_idle = NavePrincipal(animacioIdle, (200, 200))
+        ani = pyglet.resource.animation('images/enemy/nave-dibujo-mas.gif')
+        aniNavePrincipal =  pyglet.resource.animation('images/character/idle/nave-giff-nuevo-stilo.gif')
+        animacioIdle = Animation.from_image_sequence(self.sprite_idle, 0.05, True)
+
+
+        self.sprite_idle = NavePrincipal(aniNavePrincipal,animacioShoot,(200,200))
+        self.sprite_idle.position = (200,200)
+        self.sprite_idle.velocity = (0,0)
+        self.sprite_idle.scale = 0.6
+        self.sprite_idle.touched = False
+
+        self.stage = Label("Stage +",font_name='Consolas',font_size=18,anchor_x='center',anchor_y='center')
+        self.stage.position = (Main.director.get_window_size()[0]/2,Main.director.get_window_size()[1]/2)
+        self.press_to_continue = Label("Press 'Space' to continue",font_name='Consolas',font_size=18,anchor_x='center',anchor_y='center')
+        self.press_to_continue.position = (Main.director.get_window_size()[0] / 2, Main.director.get_window_size()[1] / 2-30)
+        #self.sprite_disparo = Disparo(self.animacioShoot,self.sprite_idle.position,False)
+        #self.sprite_disparo.velocity = (0,0)
+        #self.sprite_shoot.velocity = (0,0)
         self.nave_enemigas = []
-        for i in range (self.numero_enemigos):
-            self.nave_enemigas.append(EnemyIA('images/enemy/Nave1.png',(random.randint(0,1200),random.randint(0,700)),self.animacioShoot))
-        for ele in self.nave_enemigas:
-            self.add(ele)
+        self.nave_enemiga = EnemyIA(ani,(200,500),animacioShoot)
+        self.nave_enemiga2 = EnemyIA(ani, (200, 650), animacioShoot)
+        self.nave_enemiga3 = EnemyIA(ani, (200, 800), animacioShoot)
+        self.nave_enemiga4 = EnemyIA(ani, (400, 500), animacioShoot)
+        self.nave_enemiga5 = EnemyIA(ani, (400, 650), animacioShoot)
+        self.nave_enemiga6 = EnemyIA(ani, (400, 800), animacioShoot)
+        self.nave_enemiga7 = EnemyIA(ani, (300, 800), animacioShoot)
+        self.nave_enemiga8 = EnemyIA(ani, (300, 950), animacioShoot)
+        self.nave_enemiga9 = EnemyIA(ani, (300, 1100), animacioShoot)
+        self.nave_enemiga10 = EnemyIA(ani, (200, 1250), animacioShoot)
+        self.nave_enemiga11 = EnemyIA(ani, (300, 1400), animacioShoot)
+        self.nave_enemiga12 = EnemyIA(ani, (400, 1550), animacioShoot)
+        self.nave_enemigas.append(self.nave_enemiga)
+        self.nave_enemigas.append(self.nave_enemiga2)
+        self.nave_enemigas.append(self.nave_enemiga3)
+        self.nave_enemigas.append(self.nave_enemiga4)
+        self.nave_enemigas.append(self.nave_enemiga5)
+        self.nave_enemigas.append(self.nave_enemiga6)
+        self.nave_enemigas.append(self.nave_enemiga7)
+        self.nave_enemigas.append(self.nave_enemiga8)
+        self.nave_enemigas.append(self.nave_enemiga9)
+        self.nave_enemigas.append(self.nave_enemiga10)
+        self.nave_enemigas.append(self.nave_enemiga11)
+        self.nave_enemigas.append(self.nave_enemiga12)
+        self.numero_enemigos = 12
+        # self.create_enemies()
         self.add(self.sprite_idle)
+        self.add(self.stage)
+        self.add(self.press_to_continue)
+        self.stage_iniated = False
+       # self.add(self.sprite_disparo)
+        self.sprite_idle.do(NavePrincipalDriver(Main.director.get_window_size()[0],Main.director.get_window_size()[1]))
+        #self.sprite_disparo.do(NavePrincipalDisparo())
 
-            #self.sprite_walk.do(action=Hide())
-        #self.add(self.sprite_walk)
-    def on_close(self):
-        self.alive = 0
+        #self.remove(self.stage)
+        #self.remove(self.press_to_continue)
+        self.schedule_interval(self.sprite_idle.disparar, 0.2)
+        # for enemy in self.nave_enemigas:
+        #     self.add(enemy)
+        #     enemy.do(NaveEnemigaMove())
+        #     self.schedule_interval(enemy.enemigo_disparo, 3)
 
+    #
+    #         #self.sprite_walk.do(action=Hide())
+    #     #self.add(self.sprite_walk)
+    # def on_close(self):
+    #     self.alive = 0
+    #
     def on_key_press(self, sym, dt):
-        self.keys[sym] = 1
-    def on_key_pressed(self,dt):
-        if self.keys[key.SPACE] and not self.sprite_idle.touched:
-            posShoot = (self.sprite_idle.position[0], self.sprite_idle.position[1] + 70)
-            #  self.disparo = Disparo(self.animacioShoot, posShoot, False)
-            self.add(self.disparo)
-    def on_key_release(self, sym, sprites):
-        self.keys[sym] = 0
-    def dispara_enemic(self,dt):
-        for nave in self.nave_enemigas:
-            posShoot = (nave.position[0], nave.position[1] - 70)
-            self.disparo = Disparo(self.animacioShoot, posShoot, True)
-            self.add(self.disparo)
+         if Settings.keyboard_player[key.SPACE] and not self.stage_iniated:
+            if self.stage is not None and self.press_to_continue is not None:
+                self.stage.visible = False
+                self.press_to_continue.visible = False
+                self.stage_iniated = True
+            for enemy in self.nave_enemigas:
+                self.add(enemy)
+                enemy.do(NaveEnemigaMove())
+                self.schedule_interval(enemy.enemigo_disparo, 3)
+    # def create_enemies(self):
+    #     for i in range (self.numero_enemigos):
+    #          self.nave_enemigas.append(EnemyIA('images/enemy/Nave1.png',(random.randint(0,1200),random.randint(0,700)),self.animacioShoot))
+    #     for ele in self.nave_enemigas:
+    #          self.add(ele)
+    #          self.schedule(ele.update)
+
+    #sdef on_key_release(self, sym):
+    #     self.keys[sym] = 0
+    # def dispara_enemic(self,dt):
+    #     for nave in self.nave_enemigas:
+    #         posShoot = (nave.position[0], nave.position[1] - 70)
+    #         #self.disparo = Disparo(self.animacioShoot, posShoot, True)
+    #         self.add(self.sprite_disparo)
     def update(self, dt):
         self.col_man.clear()
-        print(Settings.zones)
-        for ele in self.children:
-            if isinstance(ele[1],Disparo):
-                ele[1].update(dt)
-                if self.col_man.they_collide(self.sprite_idle,ele[1]) and ele[1].is_enemy:
-                        self.sprite_idle.touched = True
-                for navee in self.nave_enemigas:
-                    if self.col_man.they_collide(navee, ele[1]) and not ele[1].is_enemy:
-                        ele[1].touched = True
-                        navee.touched = True
-                        self.nave_enemigas.remove(navee)
-            if isinstance(ele[1],EnemyIA):
-                ele[1].update(dt,self.sprite_shoot)
-                if self.col_man.they_collide(self.sprite_idle, ele[1]):
-                    ele[1].touched = True
-                    self.sprite_idle.touched = True
+        self.sprite_idle.cshape.center = self.sprite_idle.position
 
-            if isinstance(ele[1],NavePrincipal):
-                ele[1].update(dt)
-        if not self.sprite_idle.touched :
-            x = self.keys[key.D] - self.keys[key.A]
-            y = self.keys[key.W] - self.keys[key.S]
-            if x != 0 or y != 0:
-                posIdle = self.sprite_idle.position
-                new_x = posIdle[0] + self.velocidad * x * dt * 2
-                new_y = posIdle[1] + self.velocidad * y * dt * 2
-                print(new_y,new_x)
-                if new_y > 0+150 and new_y <= Main.get_screen_resolution()[1]-50 and new_x > 0 +50and new_x <= Main.get_screen_resolution()[0]-50:
-                    self.sprite_idle.position = (new_x, new_y)
+            #self.sprite_disparo = Disparo(self.animacioShoot, self.sprite_idle.position, False)
+        # if Settings.keyboard_player[key.SPACE]:
+        #     self.sprite_idle.add(self.sprite_disparo)
+        #     for eah in self.sprite_idle.children:
+        #             eah[1].update(dt)
+        #if self.sprite_idle.position[1] > 0  and self.sprite_idle.position[0] <= Main.get_screen_resolution()[1] and \
+        #         self.sprite_idle.position[0] > 0  and self.sprite_idle.position[0] <= Main.get_screen_resolution()[0] :
+        #         self.worker_action.step(dt)
+        #else:
+          #  self.worker_action.stop()
+        for ele in self.children:
+            self.col_man.add(ele[1])
+
+            if isinstance(ele[1],EnemyIA):
+                ele[1].cshape.center = ele[1].position
+        #          ele[1].update(dt)
+                if self.col_man.they_collide(self.sprite_idle,ele[1]):
+                        print("Tocat")
+                        self.sprite_idle.touched = True
+            if isinstance(ele[1],Disparo):
+                ele[1].cshape.center = ele[1].position
+                for ene in self.nave_enemigas:
+                    if self.col_man.they_collide(ene,ele[1]) and not ele[1].is_enemy:
+                            ene.touched = True
+                            ele[1].touched = True
+                            self.numero_enemigos -= 1
+                if self.col_man.they_collide(self.sprite_idle,ele[1]) and ele[1].is_enemy:
+                    self.sprite_idle.touched = True
+                    ele[1].touched = True
+        #         for navee in self.nave_enemigas:
+        #             if self.col_man.they_collide(navee, ele[1]) and not ele[1].is_enemy:
+        #                 ele[1].touched = True
+        #                 navee.touched = True
+        #                 self.nave_enemigas.remove(navee)
+        #     if isinstance(ele[1],EnemyIA):
+        #         ele[1].update(dt,self.sprite_shoot)
+        #         if self.col_man.they_collide(self.sprite_idle, ele[1]):
+        #             ele[1].touched = True
+        #             self.sprite_idle.touched = True
+        #
+        #     if isinstance(ele[1],NavePrincipal):
+        #         ele[1].update(dt)
+
 
 class NavePrincipal(Sprite):
-    def __init__(self,image,pos):
+    def __init__(self,image,anim,pos):
         super().__init__(image,pos)
-        self.position = pos
+        self.position_initial = pos
         self.scale = 0.4
+        self.anim_shoot = anim
+        self.velocity = (0,0)
         self.touched = False
-        self.cshape = cm.CircleShape(Vector2(*pos),40)
+        self.cshape = cm.AARectShape(Vector2(*pos),20,20)
     def update(self,dt):
         if not self.touched:
             self.cshape.center = Vector2(*self.position)
         else:
-            self.cshape = cm.CircleShape((0,0),0)
+            self.cshape = cm.AARectShape((0,0),0,0)
             self.kill()
+    def disparar(self,dt):
+        if Settings.keyboard_player[key.SPACE]:
+            disparo = Disparo(self.anim_shoot, (self.position[0],self.position[1]+20), False)
+            self.parent.add(disparo)
+            disparo.do(MovimientoDispara())
 class Disparo(Sprite):
     def __init__(self,image,pos,is_enem):
         super().__init__(image,pos)
         self.touched = False
+        self.position = pos
         self.is_enemy = is_enem
         self.scale = 0.2
-        self.cshape = cm.CircleShape(Vector2(*pos),1)
+        self.sprite_dis = image
+        self.velocity = (0,0)
+        self.cshape = cm.AARectShape(Vector2(*pos),2 , 2)
 
     def update(self, delta_t):
-        if not self.touched:
-            if not self.is_enemy:
-                move = MoveBy((0,800),1)
-                self.do(move)
-                self.cshape.center = Vector2(*self.position)
-                if self.y > Main.get_screen_resolution()[1] :
+        if not self.is_enemy:
+            if not self.touched:
+                if self.position[1] >= Main.director.get_window_size()[1]:
+                    print("Disparo mort.")
                     self.kill()
-            elif self.is_enemy:
-                move = MoveBy((0, -200), 1)
-                self.do(move)
-                self.cshape.center = Vector2(*self.position)
-                if self.y < 0:
-                    self.kill()
-        else:
-
-            self.kill()
+            else:
+                self.kill()
+        elif self.is_enemy:
+                #move = MoveBy((0, -Main.director.get_window_size()[1]), 1)
+                #self.do(move)
+                #self.cshape.center = Vector2(*self.position)
+            if self.position[1] <= 0:
+                print("Disparo enemic mort.")
+                self.kill()
 class EnemyIA(Sprite):
     def __init__(self,image,pos,animShoot):
         super().__init__(image,pos)
         self.position = pos
-        self.scale = 0.2
+        self.scale = 0.1
         self.rotation = 180
+        self.velocity = (0,0)
         self.touched = False
         self.on_air = False
-        posShoot = (self.position[0]/2-250, self.position[1]/2)
-        self.fire = cocos.sprite.Sprite(animShoot,posShoot,scale=0.2)
-        self.fire.cshape = cm.CircleShape(Vector2(*posShoot),4)
-        self.cshape = cm.CircleShape(Vector2(*pos), 25)
-    def update(self,dt,sprite_disparo):
+        posShoot = (self.position[0]/2, self.position[1]/2)
+        self.fire = animShoot
+        self.fire.velocity = (0, 0)
+        self.fire.cshape = cm.AARectShape(Vector2(*posShoot),2,2)
+        self.cshape = cm.AARectShape(Vector2(*pos), 20 , 20)
+    def update(self,dt):
         if not self.touched:
-            self.position = Vector2(self.position[0],self.position[1]-50*dt)
-            self.cshape.center = Vector2(*self.position)
-            self.fire.position = Vector2(self.fire.position[0], self.fire.position[1] - 800 * dt)
-            self.fire.cshape.center = Vector2(*self.fire.position)
-            if self.y < 0:
-                self.kill()
-
+            if self.position[1] <= 0:
+                    print("Ha arribat al limit")
+                    self.touched = True
+                    self.parent.numero_enemigos -= 1
         else:
-            self.cshape = cm.CircleShape((0,0),0)
+            self.cshape = cm.AARectShape((0,0),0,0)
             self.kill()
+    def respawn(self,dt):
+        self.parent.add(self)
+        self.update(dt)
+    def enemigo_disparo(self,dt):
+        disparo = Disparo(self.fire, (self.position[0], self.position[1] - 30), True)
+        if not self.touched:
+            self.parent.add(disparo)
+            disparo.do(MovimientoDispara())

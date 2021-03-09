@@ -16,7 +16,8 @@ from pyglet.window import key
 
 def init_director():
     xsize, ysize = get_screen_resolution()
-    director.init(width=xsize, height=ysize, caption='', fullscreen=False)
+    director.init( caption='', fullscreen=False)
+    director.show_FPS = True
 
 
 def get_screen_resolution():
@@ -73,9 +74,11 @@ if __name__ == '__main__':
    escena_1 = Scene(MiMenu())
    escena_2 = Level()
    Settings.init()
+   director.show_FPS = True
    keyboard = key.KeyStateHandler()
+   Settings.keyboard_player = keyboard
    director.window.push_handlers(keyboard)
-   #cProfile.run('director.run(escena_1)')
-   director.run(escena_1)
+   cProfile.run('director.run(escena_1)')
+   #director.run(escena_1)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
