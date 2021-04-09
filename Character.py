@@ -64,9 +64,8 @@ class Character(cocos.layer.ScrollableLayer):
         self.col_man = cm.CollisionManagerBruteForce()
         self.background = cocos.sprite.Sprite('images/background/background.png')
         directorio_personaje_reposo = 'images/character/idle'
-        directorio_personaje_andando = 'images/character/walk'
+
         directorio_personaje_disparo = 'images/character/shoot2'
-        orderelistWalk = sorted(os.listdir('./' + directorio_personaje_andando))
         orderelistIdle = sorted(os.listdir('./' + directorio_personaje_reposo))
         orderelistShoot = sorted(os.listdir('./' + directorio_personaje_disparo))
 
@@ -95,6 +94,7 @@ class Character(cocos.layer.ScrollableLayer):
         self.sprite_idle.position = (200,200)
         self.sprite_idle.velocity = (0,0)
         self.sprite_idle.scale = 0.2
+
         self.sprite_idle.touched = False
         self.stage = Label("Stage +",font_name='Consolas',font_size=18,anchor_x='center',anchor_y='center')
         self.stage.position = (Main.director.get_window_size()[0]/2,Main.director.get_window_size()[1]/2)
