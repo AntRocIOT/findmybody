@@ -5,7 +5,6 @@ from cocos.tiles import load, RectMapLayer
 import Main
 import Layers
 from Character import *
-from Control import *
 class Level(Scene):
     def __init__(self):
         super().__init__()
