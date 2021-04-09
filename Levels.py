@@ -11,14 +11,9 @@ class Level(Scene):
         fondo_level1 = Layers.Level1()
 
         self.scroller = ScrollableLayer()
-        #self.scroller.add(layer)
-        #self.scroll_layer = ScrollableLayer()
         personaje = Character()
         background = Layers.Level1()
         self.scroller.add(background)
         self.scroller.add(personaje)
-        initialPos = (0,0)
         self.add(self.scroller)
         Settings.scroller = self.scroller
-        #self.add
-

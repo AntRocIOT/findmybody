@@ -94,6 +94,7 @@ class Character(cocos.layer.ScrollableLayer):
         self.sprite_idle.position = (200,200)
         self.sprite_idle.velocity = (0,0)
         self.sprite_idle.scale = 0.2
+
         self.sprite_idle.touched = False
         self.stage = Label("Stage +",font_name='Consolas',font_size=18,anchor_x='center',anchor_y='center')
         self.stage.position = (Main.director.get_window_size()[0]/2,Main.director.get_window_size()[1]/2)
