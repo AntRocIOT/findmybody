@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='smashking',
+    name='findmyboby',
     version='1.0',
     packages=[''],
     url='',
