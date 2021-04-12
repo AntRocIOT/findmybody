@@ -824,26 +824,6 @@ renderer/CCPass.h
 3d/CC3DProgramInfo.h
 ../cocos2d/cocos/3d/3d/CC3DProgramInfo.h
 
-../cocos2d/cocos/audio/include/AudioEngine.h
-functional
--
-list
--
-string
--
-unordered_map
--
-platform/CCPlatformConfig.h
-../cocos2d/cocos/audio/include/platform/CCPlatformConfig.h
-platform/CCPlatformMacros.h
-../cocos2d/cocos/audio/include/platform/CCPlatformMacros.h
-audio/include/Export.h
-../cocos2d/cocos/audio/include/audio/include/Export.h
-
-../cocos2d/cocos/audio/include/Export.h
-FBaseConfig.h
--
-
 ../cocos2d/cocos/base/CCAsyncTaskPool.h
 platform/CCPlatformMacros.h
 ../cocos2d/cocos/base/platform/CCPlatformMacros.h
@@ -2696,23 +2676,7 @@ EGL/egl.h
 GL/osmesa.h
 -
 
-/home/mastercomander/Desktop/FindMyBody/Classes/AppDelegate.cpp
-AppDelegate.h
 /home/mastercomander/Desktop/FindMyBody/Classes/AppDelegate.h
-HelloWorldScene.h
-/home/mastercomander/Desktop/FindMyBody/Classes/HelloWorldScene.h
-audio/include/AudioEngine.h
-/home/mastercomander/Desktop/FindMyBody/Classes/audio/include/AudioEngine.h
-
-/home/mastercomander/Desktop/FindMyBody/Classes/AppDelegate.h
-cocos2d.h
-/home/mastercomander/Desktop/FindMyBody/Classes/cocos2d.h
-
-/home/mastercomander/Desktop/FindMyBody/Classes/HelloWorldScene.cpp
-HelloWorldScene.h
-/home/mastercomander/Desktop/FindMyBody/Classes/HelloWorldScene.h
-
-/home/mastercomander/Desktop/FindMyBody/Classes/HelloWorldScene.h
 cocos2d.h
 /home/mastercomander/Desktop/FindMyBody/Classes/cocos2d.h
 
