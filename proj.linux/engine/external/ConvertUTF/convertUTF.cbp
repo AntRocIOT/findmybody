@@ -92,9 +92,6 @@
 		<Unit filename="/home/mastercomander/Desktop/FindMyBody/cocos2d/cmake/Modules/CocosConfigDepend.cmake">
 			<Option virtualFolder="CMake Files\cocos2d\cmake\Modules\"/>
 		</Unit>
-		<Unit filename="/home/mastercomander/Desktop/FindMyBody/cocos2d/cmake/Modules/FindFontconfig.cmake">
-			<Option virtualFolder="CMake Files\cocos2d\cmake\Modules\"/>
-		</Unit>
 		<Unit filename="/home/mastercomander/Desktop/FindMyBody/cocos2d/cmake/Modules/FindGTK3.cmake">
 			<Option virtualFolder="CMake Files\cocos2d\cmake\Modules\"/>
 		</Unit>

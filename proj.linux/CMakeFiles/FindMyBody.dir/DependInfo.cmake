@@ -6,6 +6,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_CHECK_CXX
   "/home/mastercomander/Desktop/FindMyBody/Classes/AppDelegate.cpp" "/home/mastercomander/Desktop/FindMyBody/proj.linux/CMakeFiles/FindMyBody.dir/Classes/AppDelegate.cpp.o"
   "/home/mastercomander/Desktop/FindMyBody/Classes/HelloWorldScene.cpp" "/home/mastercomander/Desktop/FindMyBody/proj.linux/CMakeFiles/FindMyBody.dir/Classes/HelloWorldScene.cpp.o"
+  "/home/mastercomander/Desktop/FindMyBody/Classes/Models.cpp" "/home/mastercomander/Desktop/FindMyBody/proj.linux/CMakeFiles/FindMyBody.dir/Classes/Models.cpp.o"
   "/home/mastercomander/Desktop/FindMyBody/proj.linux/main.cpp" "/home/mastercomander/Desktop/FindMyBody/proj.linux/CMakeFiles/FindMyBody.dir/main.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")

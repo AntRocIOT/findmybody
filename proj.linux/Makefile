@@ -346,6 +346,33 @@ Classes/HelloWorldScene.cpp.s:
 	$(MAKE) -f CMakeFiles/FindMyBody.dir/build.make CMakeFiles/FindMyBody.dir/Classes/HelloWorldScene.cpp.s
 .PHONY : Classes/HelloWorldScene.cpp.s
 
+Classes/Models.o: Classes/Models.cpp.o
+
+.PHONY : Classes/Models.o
+
+# target to build an object file
+Classes/Models.cpp.o:
+	$(MAKE) -f CMakeFiles/FindMyBody.dir/build.make CMakeFiles/FindMyBody.dir/Classes/Models.cpp.o
+.PHONY : Classes/Models.cpp.o
+
+Classes/Models.i: Classes/Models.cpp.i
+
+.PHONY : Classes/Models.i
+
+# target to preprocess a source file
+Classes/Models.cpp.i:
+	$(MAKE) -f CMakeFiles/FindMyBody.dir/build.make CMakeFiles/FindMyBody.dir/Classes/Models.cpp.i
+.PHONY : Classes/Models.cpp.i
+
+Classes/Models.s: Classes/Models.cpp.s
+
+.PHONY : Classes/Models.s
+
+# target to generate assembly for a file
+Classes/Models.cpp.s:
+	$(MAKE) -f CMakeFiles/FindMyBody.dir/build.make CMakeFiles/FindMyBody.dir/Classes/Models.cpp.s
+.PHONY : Classes/Models.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -401,6 +428,9 @@ help:
 	@echo "... Classes/HelloWorldScene.o"
 	@echo "... Classes/HelloWorldScene.i"
 	@echo "... Classes/HelloWorldScene.s"
+	@echo "... Classes/Models.o"
+	@echo "... Classes/Models.i"
+	@echo "... Classes/Models.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"

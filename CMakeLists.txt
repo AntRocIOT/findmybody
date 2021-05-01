@@ -49,19 +49,24 @@ set(GAME_HEADER)
 
 set(GAME_RES_FOLDER
     "${CMAKE_CURRENT_SOURCE_DIR}/Resources"
+    "${CMAKE_CURRENT_SOURCE_DIR}/Resources/character/idle"
     )
+set(CMAKE_CXX_FLAGS "-lstdc++fs")
+
 if(APPLE OR WINDOWS)
     cocos_mark_multi_resources(common_res_files RES_TO "Resources" FOLDERS ${GAME_RES_FOLDER})
 endif()
 
-# add cross-platforms source files and header files 
+# add cross-platforms source files and header files
 list(APPEND GAME_SOURCE
      Classes/AppDelegate.cpp
      Classes/HelloWorldScene.cpp
+     Classes/Models.cpp
      )
 list(APPEND GAME_HEADER
      Classes/AppDelegate.h
      Classes/HelloWorldScene.h
+     Classes/Models.h
      )
 
 if(ANDROID)
@@ -130,6 +135,7 @@ else()
 endif()
 
 target_link_libraries(${APP_NAME} cocos2d)
+target_link_libraries(${APP_NAME} stdc++fs)
 target_include_directories(${APP_NAME}
         PRIVATE Classes
         PRIVATE ${COCOS2DX_ROOT_PATH}/cocos/audio/include/

@@ -26,16 +26,25 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include <string>
+#include <iostream>
+#include <experimental/filesystem>
 using namespace cocos2d;
-
+using namespace std;
 class HelloWorld : public cocos2d::Scene
 {
 private:
-  Sprite* _player;
+    Vector< SpriteFrame*> _idlePlayer;
+    Animation* _idleAnimation;
+    Animate* _idleAction;
+    std::vector<std::string> _searchPaths;
+    SpriteFrameCache* _spriteCache;
 public:
     static cocos2d::Scene* createScene();
+
     virtual bool init();
     void addMonster(float dt);
+    void loadCharacter(cocos2d::Size winS);
     void menuCloseCallback(cocos2d::Ref* pSender);
 
     // implement the "static create()" method manually

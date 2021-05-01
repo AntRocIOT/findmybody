@@ -23,9 +23,14 @@
  ****************************************************************************/
 
 #include "HelloWorldScene.h"
+#include <string>
+#include <iostream>
+#include <experimental/filesystem>
+
+using namespace std;
+namespace fs = std::experimental::filesystem;
 
 USING_NS_CC;
-
 Scene* HelloWorld::createScene()
 {
     return HelloWorld::create();
@@ -43,47 +48,61 @@ bool HelloWorld::init()
 {
     if ( !Scene::init() ) {
         return false;
-    }
-// 2
+
+}
+
+    _searchPaths.push_back("res/character/idle");
+
+    FileUtils *fileUtils = FileUtils::getInstance();
+    fileUtils->setSearchPaths(_searchPaths);
+
     auto origin = Director::getInstance()->getVisibleOrigin();
     auto winSize = Director::getInstance()->getVisibleSize();
-// 3
     auto background = DrawNode::create();
     background->drawSolidRect(origin, winSize, Color4F(0.6,0.6,0.6,1.0));
     this->addChild(background);
+// 2
+
+// 3
+    // _anim = Animation::animation();
+// There are other several ways of storing + adding frames,
+// this is the most basic using one image per frame.
+    loadCharacter(winSize);
+    //_idlePlayer->setScale(0.1);
+    //_player->setPosition(Vec2(winSize.width * 0.2, winSize.height * 0.5));
+    //this->addChild(_player);
+    //auto animation = Animation::createWithSpriteFrames(frames, 1.0f/8);
+    //sprite->runAction(RepeatForever::create(Animate::create(animation)));
+
 // 4
-    _player = Sprite::create("cabeza_bony_limpiando1.png");
-    _player->setScale(0.1);
-    _player->setPosition(Vec2(winSize.width * 0.1, winSize.height * 0.5));
-    this->addChild(_player);
+    //_player = Sprite::create(newspriteFrame);
+    //_player->setScale(0.1);
+    //_player->setPosition(Vec2(winSize.width * 0.2, winSize.height * 0.5));
+    //this->addChild(_player);
 
     return true;
 }
-void HelloWorld::addMonster(float dt) {
-  auto monster = Sprite::create("monster.png");
+void HelloWorld::loadCharacter(cocos2d::Size winS){
+    _spriteCache = SpriteFrameCache::getInstance();
+    _spriteCache->addSpriteFramesWithFile("head-0.plist");
+    for (int i = 1; i < 3; i++)
+    {
+     std::string num = StringUtils::format("%d", i);
+     _idlePlayer.pushBack(_spriteCache->getSpriteFrameByName("head" + num + ".png"));
+    }
+    _idleAnimation = Animation::createWithSpriteFrames(_idlePlayer, 0.05f);
+    _idleAnimation->retain();
+// use/run the animation
+    auto temp_sprite = Sprite::create();
 
-  // 1
-  auto monsterContentSize = monster->getContentSize();
-  auto selfContentSize = this->getContentSize();
-  int minY = monsterContentSize.height/2;
-  int maxY = selfContentSize.height - monsterContentSize.height/2;
-  int rangeY = maxY - minY;
-  int randomY = (rand() % rangeY) + minY;
-
-  monster->setPosition(Vec2(selfContentSize.width + monsterContentSize.width/2, randomY));
-  this->addChild(monster);
-
-  // 2
-  int minDuration = 2.0;
-  int maxDuration = 4.0;
-  int rangeDuration = maxDuration - minDuration;
-  int randomDuration = (rand() % rangeDuration) + minDuration;
-
-  // 3
-  auto actionMove = MoveTo::create(randomDuration, Vec2(-monsterContentSize.width/2, randomY));
-  auto actionRemove = RemoveSelf::create();
-  monster->runAction(Sequence::create(actionMove,actionRemove, nullptr));
+    temp_sprite->setAnchorPoint(Vec2(0.5,0.5));
+    temp_sprite->setPosition(Vec2(winS.width * 0.2, winS.height * 0.5));
+    temp_sprite->setScale(0.1);
+    this->addChild(temp_sprite);
+    auto walk = Animate::create(_idleAnimation);
+    temp_sprite->runAction(RepeatForever::create(walk));
 }
+
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {

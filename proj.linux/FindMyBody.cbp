@@ -914,6 +914,12 @@
 		<Unit filename="/home/mastercomander/Desktop/FindMyBody/Classes/HelloWorldScene.h">
 			<Option target="FindMyBody"/>
 		</Unit>
+		<Unit filename="/home/mastercomander/Desktop/FindMyBody/Classes/Models.cpp">
+			<Option target="FindMyBody"/>
+		</Unit>
+		<Unit filename="/home/mastercomander/Desktop/FindMyBody/Classes/Models.h">
+			<Option target="FindMyBody"/>
+		</Unit>
 		<Unit filename="/home/mastercomander/Desktop/FindMyBody/cocos2d/cocos/2d/CCAction.cpp">
 			<Option target="cocos2d"/>
 		</Unit>
@@ -4380,9 +4386,6 @@
 			<Option virtualFolder="CMake Files\cocos2d\cmake\Modules\"/>
 		</Unit>
 		<Unit filename="/home/mastercomander/Desktop/FindMyBody/cocos2d/cmake/Modules/CocosConfigDepend.cmake">
-			<Option virtualFolder="CMake Files\cocos2d\cmake\Modules\"/>
-		</Unit>
-		<Unit filename="/home/mastercomander/Desktop/FindMyBody/cocos2d/cmake/Modules/FindFontconfig.cmake">
 			<Option virtualFolder="CMake Files\cocos2d\cmake\Modules\"/>
 		</Unit>
 		<Unit filename="/home/mastercomander/Desktop/FindMyBody/cocos2d/cmake/Modules/FindGTK3.cmake">
